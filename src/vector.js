@@ -9,7 +9,7 @@ module.exports = exports = {
 
 function rotate(a, angle) {
     return {
-        x: a.x * Math.cos(angle) - a.y * Math.six(angle),
+        x: a.x * Math.cos(angle) - a.y * Math.sin(angle),
         y: a.x * Math.sin(angle) + a.y * Math.cos(angle)
     };
 }

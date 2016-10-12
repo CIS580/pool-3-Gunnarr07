@@ -251,25 +251,32 @@ function update(elapsedTime) {
   collisions.forEach(function(pair) {
     // Find the normal of collision
     var collisionNormal = {
-      x: pair.a.x - pair.b.x,
-      y: pair.a.y - pair.b.y
+      x: pair.a.position.x - pair.b.position.x,
+      y: pair.a.position.y - pair.b.position.y
     }
+    // Calculate the overlap between balls
+    var overlap = 32 - Vector.magnitude(collisionNormal);
+    var collisionNormal = Vector.normalize(collisionNormal);
+    par.a.position.x += collisionNormal.x * overlap /2;
+    pair.a.position.y += collisionNormal.y * overlap / 2;
+    pair.b.position.x -= collisionNormal.x * overlap / 2;
+    pair.b.poition.y -= collisionNormal.y * overlap / 2;
     // Rotate the problem space so that the normal
     // of collision lies along the x-axis
     var angle = Math.atan2(collisionNormal.y, collisionNormal.x);
-    var a = Vector.rotate(pair.a, angle);
-    var b = Vector.rotate(pair.b, angle);
-    // Solve the collision along the x-axis
+    var a = Vector.rotate(pair.a.velocity, angle);
+    var b = Vector.rotate(pair.b.velocity, angle);
+    // Solve the collision along the x-axis applling the vilosity equation
     var s = a.x;
     a.x = b.x;
     b.x = s;
     // Rotate the problem space back to world space
     a = Vector.rotate(a, -angle);
     b = Vector.rotate(b, -angle);
-    pair.a.x = a.x;
-    pair.a.y = a.y;
-    pair.b.x = b.x;
-    pair.b.y = b.y;
+    pair.a.velocity.x = a.x;
+    pair.a.velocity.y = a.y;
+    pair.b.velocity.x = b.x;
+    pair.b.velocity.y = b.y;
   });
 }
 
@@ -399,7 +406,7 @@ module.exports = exports = {
 
 function rotate(a, angle) {
     return {
-        x: a.x * Math.cos(angle) - a.y * Math.six(angle),
+        x: a.x * Math.cos(angle) - a.y * Math.sin(angle),
         y: a.x * Math.sin(angle) + a.y * Math.cos(angle)
     };
 }
